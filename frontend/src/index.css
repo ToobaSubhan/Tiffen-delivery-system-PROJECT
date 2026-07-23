@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Styles */
+body {
+  @apply bg-gray-50 text-gray-800 font-poppins;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply bg-primary text-white px-5 py-2 rounded-md hover:bg-red-700 transition font-medium shadow-md;
+}
+
+.btn-secondary {
+  @apply bg-white text-primary border border-primary px-5 py-2 rounded-md hover:bg-red-50 transition font-medium shadow-md;
+}
+
+/* Auth */
+.auth-container {
+  @apply flex justify-center items-center min-h-screen p-4 bg-gradient-to-br from-red-100 to-red-50;
+}
+
+.auth-form {
+  @apply bg-white w-full max-w-md p-8 rounded-xl shadow-lg;
+}
+
+.form-group input {
+  @apply w-full p-3 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-primary;
+}
+
+/* Dashboard */
+.dashboard-container {
+  @apply max-w-6xl mx-auto px-4 py-8;
+}
+
+.dashboard-container h1 {
+  @apply text-4xl font-bold text-gray-900 mb-8;
+}
+
+.dashboard-container h2 {
+  @apply text-2xl font-bold text-gray-900 mb-6;
+}
+
+.dashboard-cards {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-12;
+}
+
+.card {
+  @apply bg-white p-6 rounded-lg shadow-md border-l-4 border-primary;
+}
+
+.card h3 {
+  @apply text-lg font-semibold text-gray-700 mb-3;
+}
+
+.stat {
+  @apply text-3xl font-bold text-primary;
+}
+
+.subscriptions-section {
+  @apply bg-white p-8 rounded-lg shadow-md mb-8;
+}
+
+.subscriptions-list {
+  @apply space-y-4;
+}
+
+.subscription-item {
+  @apply bg-gray-50 p-6 rounded-lg border border-gray-200 hover:shadow-md transition;
+}
+
+.subscription-item h3 {
+  @apply text-xl font-semibold text-gray-800 mb-2;
+}
+
+.subscription-item p {
+  @apply text-gray-600 mb-1;
+}
+
+.quick-actions {
+  @apply flex gap-4 justify-center;
+}
+
+/* Meal Plans */
+.plans-section {
+  @apply py-12 bg-white;
+}
+
+.plans-section h2 {
+  @apply text-4xl font-bold text-center text-gray-900 mb-12;
+}
+
+.plans-container {
+  @apply max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+}
+
+.plan-card {
+  @apply bg-white border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg transition transform hover:-translate-y-1;
+}
+
+.plan-card.popular {
+  @apply border-primary border-2 shadow-xl transform scale-105;
+}
+
+.badge {
+  @apply inline-block bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold mb-4;
+}
+
+.plan-card h3 {
+  @apply text-2xl font-bold text-gray-900 mb-2;
+}
+
+.price {
+  @apply text-3xl font-bold text-primary mb-4;
+}
+
+.description {
+  @apply text-gray-600 mb-6;
+}
+
+.plan-card button {
+  @apply w-full;
+}
+
+/* Header */
+header {
+  @apply bg-white shadow-md sticky top-0 z-50;
+}
+
+.header-container {
+  @apply max-w-7xl mx-auto px-4 py-4 flex justify-between items-center;
+}
+
+.logo {
+  @apply text-2xl font-bold text-primary;
+}
+
+nav {
+  @apply flex gap-6;
+}
+
+nav a {
+  @apply text-gray-700 font-medium hover:text-primary transition;
+}
+
+.nav-buttons {
+  @apply flex gap-3;
+}
+
+/* Hero Section */
+.hero-section {
+  @apply bg-gradient-to-r from-red-50 to-red-100 py-20;
+}
+
+.hero-container {
+  @apply max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8;
+}
+
+.hero-content {
+  @apply flex-1;
+}
+
+.hero-content h1 {
+  @apply text-5xl font-bold text-gray-900 mb-4;
+}
+
+.hero-content p {
+  @apply text-xl text-gray-600 mb-8;
+}
+
+.hero-image {
+  @apply flex-1;
+}
+
+.hero-image img {
+  @apply w-full rounded-lg shadow-lg;
+}
+
