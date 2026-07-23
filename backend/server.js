@@ -22,6 +22,7 @@ const weeklyMenuRoutes   = require('./routes/weeklyMenu');
 const adminAnalyticsRoutes = require('./routes/adminAnalytics');
 const dashboardRoutes    = require('./routes/dashboard');
 const categoriesRoutes   = require('./routes/categories');
+const { startDeliveryScheduler } = require('./jobs/deliveryScheduler');
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -91,6 +92,8 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
     res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });
 });
+
+startDeliveryScheduler();
 
 app.listen(PORT, () => {
     console.log(`✓ Server running on port ${PORT}`);

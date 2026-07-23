@@ -69,3 +69,15 @@
 {"ts":"2026-07-21T04:57:52.005Z","userId":2,"type":"update_status_success","message":"Payment status updated","meta":{"paymentId":1008,"newStatus":"completed"}}
 {"ts":"2026-07-21T04:57:53.926Z","userId":2,"type":"update_status_start","message":"Updating payment status","meta":{"paymentId":16,"newStatus":"completed"}}
 {"ts":"2026-07-21T04:57:53.995Z","userId":2,"type":"update_status_success","message":"Payment status updated","meta":{"paymentId":16,"newStatus":"completed"}}
+{"ts":"2026-07-23T06:26:23.756Z","userId":1006,"type":"payments_load_start","message":"Loading payments","meta":{"isAdmin":false}}
+{"ts":"2026-07-23T06:26:23.764Z","userId":1006,"type":"payments_load_start","message":"Loading payments","meta":{"isAdmin":false}}
+{"ts":"2026-07-23T06:26:23.795Z","userId":1006,"type":"payments_load_success","message":"Loaded payments","meta":{"count":0}}
+{"ts":"2026-07-23T06:26:23.810Z","userId":1006,"type":"payments_load_success","message":"Loaded payments","meta":{"count":0}}
+{"ts":"2026-07-23T07:10:01.211Z","userId":1006,"type":"payments_load_start","message":"Loading payments","meta":{"isAdmin":false}}
+{"ts":"2026-07-23T07:10:01.232Z","userId":1006,"type":"payments_load_start","message":"Loading payments","meta":{"isAdmin":false}}
+{"ts":"2026-07-23T07:10:01.354Z","userId":1006,"type":"payments_load_success","message":"Loaded payments","meta":{"count":0}}
+{"ts":"2026-07-23T07:10:01.415Z","userId":1006,"type":"payments_load_success","message":"Loaded payments","meta":{"count":0}}
+{"ts":"2026-07-23T09:03:43.709Z","userId":1006,"type":"payments_load_start","message":"Loading payments","meta":{"isAdmin":false}}
+{"ts":"2026-07-23T09:03:43.738Z","userId":1006,"type":"payments_load_start","message":"Loading payments","meta":{"isAdmin":false}}
+{"ts":"2026-07-23T09:03:43.850Z","userId":1006,"type":"payments_load_success","message":"Loaded payments","meta":{"count":1}}
+{"ts":"2026-07-23T09:03:43.921Z","userId":1006,"type":"payments_load_success","message":"Loaded payments","meta":{"count":1}}

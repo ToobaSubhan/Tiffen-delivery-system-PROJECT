@@ -14,34 +14,40 @@ const request = async (url, method = "GET", body = null, auth = false, isForm = 
 
   if (body) options.body = isForm ? body : JSON.stringify(body);
 
-  const response = await fetch(`${API_BASE}${url}`, options);
-
-  if (response.status === 401 || response.status === 403) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "/login";
-    throw new Error("Session expired. Please login again.");
-  }
-
-  if (response.status === 204) return {};
-
-  let data;
   try {
-    data = await response.json();
+    const response = await fetch(`${API_BASE}${url}`, options);
+
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+      throw new Error("Session expired. Please login again.");
+    }
+
+    if (response.status === 204) return {};
+
+    let data;
+    try {
+      data = await response.json();
+    } catch (err) {
+      if (!response.ok) throw new Error("Something went wrong. Please try again.");
+      return {};
+    }
+
+    if (!response.ok) {
+      console.error(`[API] ${method} ${url} failed`, data);
+      throw new Error(data.message || "Request failed");
+    }
+
+    return data;
   } catch (err) {
-    if (!response.ok) throw new Error("Something went wrong. Please try again.");
-    return {};
+    console.error(`[API] ${method} ${url} error`, err);
+    throw err;
   }
-
-  if (!response.ok) {
-    throw new Error(data.message || "Request failed");
-  }
-
-  return data;
 };
 
 export const getAdminAnalytics = () => request("/admin-analytics", "GET", null, true);
-export const getUserDashboardStats = () =>request("/admin-analytics/user-dashboard", "GET", null, true);
+export const getUserDashboardStats = () => request("/admin-analytics/user-dashboard", "GET", null, true);
 export const getWeeklyMenu = () => request("/weekly-menu/public", "GET");
 
 export const loginUser = (credentials) => request("/login", "POST", credentials);
@@ -107,6 +113,5 @@ export const submitRiderLocationUpdate = (riderId, latitude, longitude) =>
 
 export const getRiderLiveLocation = (riderId) =>
   request(`/rider-locations/${riderId}`, "GET", null, true);
-
 
 

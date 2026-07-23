@@ -157,14 +157,15 @@ const UserDashboard = () => {
       setFeedbackComment("");
       setFeedbackRating(5);
     } catch (error) {
+      console.error("Failed to submit feedback:", error);
       setFeedbackMessage("Failed to submit feedback. Please try again.");
     } finally {
       setFeedbackSubmitting(false);
     }
   };
 
-  // activeSubscription MUST be derived from subscriptions
   const activeSubscription = subscriptions.find((sub) => sub?.status === "active") || null;
+  const hasActiveSubscription = Boolean(activeSubscription);
 
   if (loading) {
     return (
@@ -205,7 +206,7 @@ const UserDashboard = () => {
                   {activeSubscription ? activeSubscription.plan_name : 'None'}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {activeSubscription ? `₹${activeSubscription.price}/month` : 'Not subscribed'}
+                  {activeSubscription ? `Rs${activeSubscription.price}/month` : 'Not subscribed'}
                 </p>
               </div>
             </div>
@@ -305,7 +306,7 @@ const UserDashboard = () => {
                   
                   <div className="flex justify-between items-center text-sm text-gray-500">
                     <span>{(meal.calories || meal.cal || 'N/A')} cal</span>
-                    <span className="font-bold text-red-600">₹{(meal.price ?? meal.price_per_item) || 0}</span>
+                    <span className="font-bold text-red-600">Rs{(meal.price ?? meal.price_per_item) || 0}</span>
                   </div>
                 </div>
               ))}
@@ -331,7 +332,7 @@ const UserDashboard = () => {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">{activeSubscription.plan_name}</h3>
-                  <p className="text-gray-600">₹{activeSubscription.price}/month</p>
+                  <p className="text-gray-600">Rs{activeSubscription.price}/month</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                   activeSubscription.status === 'active' 
@@ -393,7 +394,7 @@ const UserDashboard = () => {
           )}
         </div>
 
-        {/* Deliveries Section - FIXED with real data */}
+        {/* Deliveries Section */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900">Recent Deliveries</h2>
@@ -401,54 +402,53 @@ const UserDashboard = () => {
               View All →
             </Link>
           </div>
-          
+
           {deliveries.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Meal Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {deliveries.slice(0, 5).map((delivery) => (
-                    <tr key={delivery.delivery_id || delivery.order_id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {safeFormatDate(delivery.delivery_date || delivery.order_date)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {delivery.meal_type || 'Standard'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          delivery.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                          delivery.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
-                          delivery.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {delivery.status || 'Pending'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ₹{delivery.total_amount || 0}
-                      </td>
-                    </tr>
-                  ))}
+                  {deliveries.slice(0, 5).map((delivery) => {
+                    const statusClass = {
+                      assigned: 'bg-blue-100 text-blue-700',
+                      picked_up: 'bg-purple-100 text-purple-700',
+                      'in transit': 'bg-orange-100 text-orange-700',
+                      delivered: 'bg-green-100 text-green-700',
+                      cancelled: 'bg-red-100 text-red-700',
+                    }[delivery.status] || 'bg-gray-100 text-gray-700';
+
+                    return (
+                      <tr key={delivery.delivery_id || delivery.order_id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {safeFormatDate(delivery.delivery_date || delivery.order_date)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {delivery.plan_name || 'Standard'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}`}>
+                            {delivery.status || 'assigned'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          Rs{delivery.total_amount || 0}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-gray-500">No deliveries found</p>
-              <button
-                onClick={() => navigate("/plans")}
-                className="mt-2 text-red-600 hover:text-red-800 font-medium"
-              >
-                Start Your First Order
-              </button>
+              <p className="text-gray-500">No deliveries yet. Deliveries are generated automatically each morning for active subscriptions.</p>
             </div>
           )}
         </div>

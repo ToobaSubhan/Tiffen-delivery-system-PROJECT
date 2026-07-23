@@ -22,10 +22,10 @@ exports.getUserDeliveries = async (req, res) => {
           m.plan_name as plan_name
         FROM Deliveries d
         JOIN Orders o ON d.order_id = o.order_id
-        JOIN Subscriptions s ON o.subscription_id = s.subscription_id
-        JOIN Meal_Plans m ON s.plan_id = m.plan_id
-        WHERE s.customer_id = @customerId
-        ORDER BY o.delivery_date DESC
+        LEFT JOIN Subscriptions s ON o.subscription_id = s.subscription_id
+        LEFT JOIN Meal_Plans m ON s.plan_id = m.plan_id
+        WHERE (o.customer_id = @customerId OR s.customer_id = @customerId)
+        ORDER BY COALESCE(o.delivery_date, o.order_date, GETDATE()) DESC
       `);
 
     res.json(result.recordset);

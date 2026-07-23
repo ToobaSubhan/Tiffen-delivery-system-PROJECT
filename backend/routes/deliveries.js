@@ -81,31 +81,31 @@ router.put('/update-status', verifyAdmin, async (req, res) => {
 // User route - get user's deliveries
 router.get("/user", verifyToken, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || req.user?.customer_id || req.user?.user_id;
     const pool = await getConnection();
 
     const result = await pool.request()
       .input("userId", sql.Int, userId)
       .query(`
-        SELECT 
+        SELECT
           d.delivery_id,
           d.order_id,
-          d.delivery_time,
           d.status,
-          d.rider_id,
-          d.customer_rating,
-          d.feedback,
+          d.delivery_time,
+          o.order_date,
+          o.total_amount,
           o.delivery_date,
-          m.plan_name as plan_name
+          m.plan_name,
+          r.first_name + ' ' + r.last_name AS rider_name
         FROM Deliveries d
         JOIN Orders o ON d.order_id = o.order_id
         JOIN Subscriptions s ON o.subscription_id = s.subscription_id
         JOIN Meal_Plans m ON s.plan_id = m.plan_id
-        WHERE s.customer_id = @userId
-        ORDER BY o.delivery_date DESC
+        LEFT JOIN Riders r ON d.rider_id = r.rider_id
+        WHERE o.customer_id = @userId
+        ORDER BY o.order_date DESC
       `);
 
-    // include a consistent rider_name field if needed
     res.json({ success: true, data: result.recordset });
   } catch (err) {
     console.error("Error fetching user deliveries:", err);
