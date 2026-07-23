@@ -10,6 +10,7 @@ import {
   submitFeedback
 } from "../../services/api";
 import { useNavigate, Link } from "react-router-dom";
+import { DashboardSkeleton } from "../ui/Skeleton";
 
 const DEFAULT_STATS = {
   activeSubscription: null,
@@ -165,14 +166,12 @@ const UserDashboard = () => {
   };
 
   const activeSubscription = subscriptions.find((sub) => sub?.status === "active") || null;
-  const hasActiveSubscription = Boolean(activeSubscription);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your dashboard...</p>
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <DashboardSkeleton />
         </div>
       </div>
     );

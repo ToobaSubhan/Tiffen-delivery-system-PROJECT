@@ -1,6 +1,5 @@
 // tiffin-frontend/src/components/Dashboard/ManageMenu.jsx
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../Context/AuthContext';
 import {
   getAllMenuItems,
   getTodayMenuAdmin,
@@ -9,10 +8,9 @@ import {
   updateMenuItemQuantity,
   uploadMenuItemImage
 } from '../../services/api';
+import { MenuCardSkeleton } from '../ui/Skeleton';
 
 const ManageMenu = () => {
-  const { user } = useAuth();
-
   const [items, setItems] = useState([]);
   const [todayMenu, setTodayMenu] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +42,7 @@ const ManageMenu = () => {
       if (Array.isArray(data)) {
         setTodayMenu(data);
         const init = {};
-        data.forEach(d => (init[d.daily_menu_id] = d.available_quantity));
+        data.forEach((d) => (init[d.daily_menu_id] = d.available_quantity));
         setEditQty(init);
       } else {
         console.error('Invalid data format:', data);
@@ -82,7 +80,7 @@ const ManageMenu = () => {
 
   const updateQuantity = async (daily_menu_id) => {
     const qty = Number(editQty[daily_menu_id]);
-    if (!Number.isInteger(qty) || qty < 0) return alert("Invalid quantity");
+    if (!Number.isInteger(qty) || qty < 0) return alert('Invalid quantity');
 
     try {
       await updateMenuItemQuantity(daily_menu_id, { available_quantity: qty });
@@ -92,125 +90,137 @@ const ManageMenu = () => {
     }
   };
 
-  const isAdded = (item_id) => Array.isArray(todayMenu) && todayMenu.some(t => t.item_id === item_id);
+  const isAdded = (item_id) => Array.isArray(todayMenu) && todayMenu.some((t) => t.item_id === item_id);
 
-  // 🔥 NEW — Image Upload Function
   const uploadImage = async (item_id, file) => {
     try {
       await uploadMenuItemImage(item_id, file);
-      alert("Image uploaded successfully!");
+      alert('Image uploaded successfully!');
       loadItems();
       loadTodayMenu();
     } catch (err) {
       console.error(err);
-      alert("Image upload failed");
+      alert('Image upload failed');
     }
   };
 
-  if (loading) return <div className="p-8">Loading...</div>;
+  if (loading) {
+    return (
+      <section className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 p-6 sm:p-8">
+        <div className="mx-auto max-w-6xl space-y-6">
+          <div className="rounded-3xl border border-red-100 bg-white p-6 shadow-sm">
+            <div className="mb-4 h-6 w-48 rounded bg-gray-200" />
+            <div className="h-4 w-64 rounded bg-gray-200" />
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div key={index} className="rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
+                <MenuCardSkeleton />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="p-8 min-h-screen bg-red-50">
-      <h1 className="text-3xl font-bold mb-6">Admin — Manage Today&apos;s Menu</h1>
+    <section className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 p-6 sm:p-8">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div className="rounded-3xl border border-red-100 bg-white p-6 shadow-sm sm:p-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">Admin</p>
+          <h1 className="mt-2 text-3xl font-semibold text-gray-900">Manage Today&apos;s Menu</h1>
+          <p className="mt-2 text-sm text-gray-600">Curate the menu for today and keep quantities in sync.</p>
+        </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Today&apos;s Menu</h2>
+              <span className="text-sm text-gray-500">{todayMenu.length} items</span>
+            </div>
 
-        {/* LEFT SIDE — TODAY MENU */}
-        <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-semibold mb-4">Today's Menu</h2>
+            <div className="space-y-3">
+              {Array.isArray(todayMenu) && todayMenu.map((entry) => (
+                <div key={entry.daily_menu_id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                  <div className="flex flex-col justify-between gap-4 md:flex-row">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900">{entry.item_name}</h3>
+                      <p className="mt-1 text-sm text-gray-600">{entry.description}</p>
+                      <div className="mt-2 flex flex-wrap gap-2 text-xs text-gray-500">
+                        <span className="rounded-full bg-white px-2 py-1">{entry.category}</span>
+                        <span className="rounded-full bg-white px-2 py-1">{entry.calories} cal</span>
+                      </div>
+                    </div>
 
-          {Array.isArray(todayMenu) && todayMenu.map(entry => (
-            <div key={entry.daily_menu_id} className="border rounded p-3 flex justify-between gap-3">
-
-              <div>
-                <h3 className="font-bold">{entry.item_name}</h3>
-                <p className="text-sm">{entry.description}</p>
-                <p className="text-sm">Category: {entry.category}</p>
-                <p className="text-sm">Ingredients: {entry.ingredients}</p>
-                <p className="text-sm">Calories: {entry.calories}</p>
-
-                {entry.image_url && (
-                  <img
-                    src={entry.image_url}
-                    alt="menu"
-                    className="w-24 h-24 rounded mt-2 object-cover border"
-                  />
-                )}
-              </div>
-
-              <div className="flex flex-col gap-2 items-end">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min="0"
-                    className="w-20 border p-1 rounded"
-                    value={editQty[entry.daily_menu_id]}
-                    onChange={(e) =>
-                      setEditQty({ ...editQty, [entry.daily_menu_id]: e.target.value })
-                    }
-                  />
-                  <button
-                    className="px-3 py-1 bg-green-600 text-white rounded"
-                    onClick={() => updateQuantity(entry.daily_menu_id)}
-                  >
-                    Save
-                  </button>
+                    <div className="flex flex-col gap-2 md:items-end">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min="0"
+                          className="w-20 rounded-lg border border-gray-200 px-2 py-2 text-sm"
+                          value={editQty[entry.daily_menu_id] ?? ''}
+                          onChange={(e) => setEditQty({ ...editQty, [entry.daily_menu_id]: e.target.value })}
+                        />
+                        <button
+                          className="rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
+                          onClick={() => updateQuantity(entry.daily_menu_id)}
+                        >
+                          Save
+                        </button>
+                      </div>
+                      <button
+                        className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+                        onClick={() => removeFromToday(entry.daily_menu_id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
                 </div>
-
-                <button
-                  className="px-3 py-1 bg-red-600 text-white rounded"
-                  onClick={() => removeFromToday(entry.daily_menu_id)}
-                >
-                  Remove
-                </button>
-              </div>
-
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* RIGHT SIDE — ADD ITEMS */}
-        <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-semibold mb-4">Add Items to Today</h2>
-
-          {items.map(item => (
-            <div key={item.item_id} className="border rounded p-3 flex justify-between">
-
-              <div>
-                <h3 className="font-bold">{item.item_name}</h3>
-                <p className="text-sm">{item.description}</p>
-                <p className="text-sm">Category: {item.category}</p>
-
-                {/* 🔥 Preview Image */}
-                {item.image_url && (
-                  <img src={item.image_url} alt={item.item_name} className="w-24 h-24 rounded mt-2 object-cover border" />
-                )}
-
-                {/* 🔥 Upload Image */}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="mt-2"
-                  onChange={(e) => uploadImage(item.item_id, e.target.files[0])}
-                />
-              </div>
-
-              <div>
-                <button
-                  onClick={() => addToToday(item.item_id)}
-                  disabled={isAdded(item.item_id)}
-                  className={`px-3 py-1 rounded text-white ${
-                    isAdded(item.item_id) ? "bg-gray-400" : "bg-red-600"
-                  }`}
-                >
-                  {isAdded(item.item_id) ? "Added" : "Add"}
-                </button>
-              </div>
-
+          <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Add Items</h2>
+              <span className="text-sm text-gray-500">{items.length} available</span>
             </div>
-          ))}
-        </div>
 
+            <div className="space-y-3">
+              {items.map((item) => (
+                <div key={item.item_id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900">{item.item_name}</h3>
+                      <p className="mt-1 text-sm text-gray-600">{item.description}</p>
+                      <p className="mt-2 text-xs uppercase tracking-wide text-gray-500">{item.category}</p>
+                      {item.image_url && (
+                        <img src={item.image_url} alt={item.item_name} className="mt-3 h-24 w-24 rounded-xl object-cover" />
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="mt-3 block text-sm text-gray-600"
+                        onChange={(e) => uploadImage(item.item_id, e.target.files[0])}
+                      />
+                    </div>
+                    <button
+                      onClick={() => addToToday(item.item_id)}
+                      disabled={isAdded(item.item_id) || addingItemId === item.item_id}
+                      className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
+                        isAdded(item.item_id) || addingItemId === item.item_id ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-700'
+                      }`}
+                    >
+                      {addingItemId === item.item_id ? 'Adding...' : isAdded(item.item_id) ? 'Added' : 'Add'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

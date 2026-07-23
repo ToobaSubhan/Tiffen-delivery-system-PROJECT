@@ -1,69 +1,37 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const links = [
+  { to: '/admin', label: 'Dashboard' },
+  { to: '/admin/operations', label: 'Operations Hub' },
+  { to: '/admin/deliveries', label: 'Deliveries' },
+  { to: '/admin/riders', label: 'Riders' },
+  { to: '/admin/feedback', label: 'Customer Feedback' },
+  { to: '/admin/complaints', label: 'Complaints' },
+  { to: '/admin/payments', label: 'Payments' },
+];
+
 const Sidebar = () => {
   return (
-    <div className="w-64 bg-red-100 h-screen p-4">
-      <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
-      <ul className="space-y-2">
-        <li>
+    <aside className="h-screen w-72 border-r border-red-100 bg-gradient-to-b from-red-50 to-white p-6">
+      <div className="mb-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">FreshMeal</p>
+        <h2 className="mt-2 text-2xl font-semibold text-gray-900">Admin Panel</h2>
+        <p className="mt-2 text-sm text-gray-600">Manage operations from one place.</p>
+      </div>
+
+      <nav className="space-y-2">
+        {links.map((link) => (
           <Link
-            to="/admin"
-            className="block px-4 py-2 hover:bg-red-200 rounded"
+            key={link.to}
+            to={link.to}
+            className="block rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-red-100 hover:text-red-700"
           >
-            Dashboard
+            {link.label}
           </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/operations"
-            className="block px-4 py-2 hover:bg-red-200 rounded"
-          >
-            Operations Hub
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/deliveries"
-            className="block px-4 py-2 hover:bg-red-200 rounded"
-          >
-            Deliveries
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/riders"
-            className="block px-4 py-2 hover:bg-red-200 rounded"
-          >
-            Riders
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/feedback"
-            className="block px-4 py-2 hover:bg-red-200 rounded"
-          >
-            Customer Feedback
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/complaints"
-            className="block px-4 py-2 hover:bg-red-200 rounded"
-          >
-            Complaints
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/payments"
-            className="block px-4 py-2 hover:bg-red-200 rounded"
-          >
-            Payments
-          </Link>
-        </li>
-      </ul>
-    </div>
+        ))}
+      </nav>
+    </aside>
   );
 };
 

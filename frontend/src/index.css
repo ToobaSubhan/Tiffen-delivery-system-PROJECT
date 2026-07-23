@@ -7,6 +7,19 @@ body {
   @apply bg-gray-50 text-gray-800 font-poppins;
 }
 
+.nav-link {
+  @apply relative transition-colors duration-200 hover:text-red-600;
+}
+
+.nav-link::after {
+  content: '';
+  @apply absolute bottom-[-4px] left-0 h-0.5 w-0 rounded-full bg-red-600 transition-all duration-300;
+}
+
+.nav-link:hover::after {
+  @apply w-full;
+}
+
 /* Buttons */
 .btn-primary {
   @apply bg-primary text-white px-5 py-2 rounded-md hover:bg-red-700 transition font-medium shadow-md;

@@ -32,6 +32,7 @@ function App() {
       <Router>
         <Header />
 
+        <div className="pt-16">
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
@@ -165,6 +166,7 @@ function App() {
           {/* Rider: share location (no auth/login required) */}
           <Route path="/rider/share/:riderId" element={<RiderShareLocation />} />
         </Routes>
+        </div>
       </Router>
     </AuthProvider>
   );
